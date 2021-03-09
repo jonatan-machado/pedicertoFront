@@ -81,6 +81,14 @@ function Add() {
     //console.log(requestedAdditional);
   };
 
+  const finalizeOrder = () => {
+    try {
+      const formatedOrder = {
+        product: ''
+      };
+    } catch (error) {}
+  };
+
   return (
     <Main>
       <Header />
