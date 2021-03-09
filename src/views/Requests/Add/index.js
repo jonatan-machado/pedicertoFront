@@ -1,11 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-import {
-  Row,
-  Col,
-  Button,
-  Form,
-} from 'react-bootstrap';
+import { Row, Col, Button, Form } from 'react-bootstrap';
 
 import {
   Container,
@@ -16,64 +11,120 @@ import {
   Adicionals,
   ListAdicionals,
   ListTotalAdicionals,
-  Hr,
+  Hr
 } from './styles';
 
 import Header from '../../../components/Header';
 
-import Burguer from '../../../assets/images/hamburger.jpg';
-
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import Api from '../../../services/api';
+import { currentUserId } from '../../../utils/User';
 
 function Add() {
+  const location = useLocation();
+  const product = location?.state?.product;
+  const userId = currentUserId();
+
+  const [quantity, setQuantity] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(Number(product.price));
+  const [requestedAdditional, setRequestedAdditional] = useState([]);
+
+  useEffect(() => {
+    getAdditionalsData();
+  }, []);
+
+  const getAdditionalsData = async () => {
+    try {
+      const request = await Api.get(`/additionals/${userId}/${product.id_category}/${product.id}`);
+
+      setRequestedAdditional(() =>
+        request.data.map((item) => {
+          //return { id: item.id, name: item.name, qtd: 0, price: item.price };
+          return { ...item, qtd: 0 };
+        })
+      );
+    } catch (error) {}
+  };
+
+  const addOneProduct = () => {
+    setQuantity(quantity + 1);
+    setTotalPrice(totalPrice + Number(product.price));
+  };
+
+  const removeOneProduct = () => {
+    if (quantity <= 1) {
+      return false;
+    } else {
+      setQuantity(quantity - 1);
+      setTotalPrice(totalPrice - Number(product.price));
+    }
+  };
+
+  const addAdditional = (additional) => {
+    const index = requestedAdditional.findIndex((item, index, array) => item.name === additional.name);
+    requestedAdditional[index].qtd += 1;
+
+    setTotalPrice(totalPrice + Number(additional.price));
+    //console.log(requestedAdditional);
+  };
+
+  const removeAdditonal = (additional) => {
+    const index = requestedAdditional.findIndex((item, index, array) => item.name === additional.name);
+
+    if (requestedAdditional[index].qtd <= 0) {
+      return false;
+    } else {
+      requestedAdditional[index].qtd -= 1;
+    }
+
+    setTotalPrice(totalPrice - Number(additional.price));
+    //console.log(requestedAdditional);
+  };
+
   return (
     <Main>
       <Header />
       <Container>
         <ul>
           <ListFood>
-              <Row className="">
-                <Col sm={3} className="img-food">
-                  <ImgProducts src={Burguer} />
-                </Col>
-                <Col sm={8}>
-                  <Food>
-                    <h3 className="title-food">
-                      Burger Especial
-                                  </h3>
-                    <p className="description-food">
-                      Pão tipo brioche, 2 burger de costela bovina, parmesan cream, cebola roxa, rúcula, queijo prato, molho chimichurri.
-                                  </p>
-                    <p className="price">
-                      R$ 28,00
-                      </p>
-                  </Food>
-                </Col>
-              </Row>
+            <Row className="">
+              <Col sm={3} className="img-food">
+                <ImgProducts src={product.img_product} />
+              </Col>
+              <Col sm={8}>
+                <Food>
+                  <h3 className="title-food">{product.name}</h3>
+                  <p className="description-food">{product.description}</p>
+                  <p className="price">R$ {product.price}</p>
+                </Food>
+              </Col>
+            </Row>
           </ListFood>
         </ul>
       </Container>
 
       <Container>
         <Adicionals>
-          <ul class="adicionals list-food">
+          <ul className="adicionals list-food">
             <Row>
               <Col xs={6}>
                 <ListAdicionals>
-                <h4 class="text-uppercase">
-                  Quantidade
-                </h4>
+                  <h4 className="text-uppercase">QUANTIDADE: {quantity}</h4>
                 </ListAdicionals>
               </Col>
               <Col xs={6}>
-                <div class="btn-add">
+                <div className="btn-add">
                   <ListAdicionals>
-                    <Button class="btn-circle mais">
+                    <Button onClick={() => addOneProduct()} className="btn-circle mais">
                       +
                     </Button>
                   </ListAdicionals>
                   <ListAdicionals>
-                    <Button class="btn-circle menos">
+                    <Button
+                      disabled={quantity <= 1 ? true : false}
+                      onClick={() => removeOneProduct()}
+                      className="btn-circle menos"
+                    >
                       -
                     </Button>
                   </ListAdicionals>
@@ -87,126 +138,44 @@ function Add() {
       <Container>
         <Adicionals>
           <div className="adicionals list-food pb-4">
-            <h4 class="text-uppercase">
-              Adicionais
-            </h4>
+            <h4 className="text-uppercase">Adicionais</h4>
           </div>
 
-          <ul class="adicionals list-food">
-            <Row>
-              <Col xs={6}>
-                <ListAdicionals>
-                  <h5 class="">
-                    Cheddar
-                  </h5>
-                  <h6 class="price">
-                    R$ 3,00
-                  </h6>
-                </ListAdicionals>
-              </Col>
-              <Col xs={6}>
-                <div class="btn-add">
-                  <ListAdicionals>
-                    <Button class="btn-circle mais">
-                      +
-                    </Button>
-                  </ListAdicionals>
-                  <ListAdicionals>
-                    <Button class="btn-circle menos">
-                      -
-                    </Button>
-                  </ListAdicionals>
-                </div>
-              </Col>
-            </Row>
-
-
-            <Hr />
-
-            <Row>
-              <Col xs={6}>
-                <ListAdicionals>
-                  <h5 class="">
-                      Maionese
-                  </h5>
-                  <h6 class="price">
-                      R$ 2,00
-                  </h6>
-                </ListAdicionals>
-              </Col>
-              <Col xs={6}>
-                <div class="btn-add">
-                  <ListAdicionals>
-                    <Button class="btn-circle mais">
-                      +
-                    </Button>
-                  </ListAdicionals>
-                  <ListAdicionals>
-                    <Button class="btn-circle menos">
-                      -
-                    </Button>
-                  </ListAdicionals>
-                </div>
-              </Col>
-            </Row>
-
-            <Hr />
-
-            <Row>
-              <Col xs={6}>
-                <ListAdicionals>
-                  <h5 class="">
-                      Batata Rústica
-                  </h5>
-                  <h6 class="price">
-                      R$ 10,00
-                  </h6>
-                </ListAdicionals>
-              </Col>
-              <Col xs={6}>
-                <div class="btn-add">
-                  <ListAdicionals>
-                    <Button class="btn-circle mais">
-                      +
-                    </Button>
-                  </ListAdicionals>
-                  <ListAdicionals>
-                    <Button class="btn-circle menos">
-                      -
-                    </Button>
-                  </ListAdicionals>
-                </div>
-              </Col>
-            </Row>
-
-            <Hr />
-
-            <Row>
-              <Col xs={6}>
-                <ListAdicionals>
-                  <h5 class="">
-                      Batata Frita
-                  </h5>
-                  <h6 class="price">
-                      R$ 8,00
-                  </h6>
-                </ListAdicionals>
-              </Col>
-              <Col xs={6}>
-                <div class="btn-add">
-                  <ListAdicionals>
-                    <Button class="btn-circle mais">
-                      +
-                    </Button>
-                  </ListAdicionals>
-                  <ListAdicionals>
-                    <Button class="btn-circle menos">
-                      -
-                    </Button>
-                  </ListAdicionals>
-                </div>
-              </Col>
-            </Row>
+          <ul className="adicionals list-food">
+            {requestedAdditional.map((additional) => (
+              <div key={additional.id}>
+                <Row>
+                  <Col xs={6}>
+                    <ListAdicionals>
+                      <h5 className="">{additional.name}</h5>
+                      <h6 className="price">
+                        {Number(additional.price).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+                      </h6>
+                    </ListAdicionals>
+                  </Col>
+                  <Col xs={6}>
+                    <div className="btn-add">
+                      <ListAdicionals>
+                        <Button type="button" onClick={() => addAdditional(additional)} className="btn-circle mais">
+                          +
+                        </Button>
+                      </ListAdicionals>
+                      {/* {additional.qtd} */}
+                      <ListAdicionals>
+                        <Button
+                          onClick={() => removeAdditonal(additional)}
+                          disabled={additional.qtd <= 0 ? true : false}
+                          className="btn-circle menos"
+                        >
+                          -
+                        </Button>
+                      </ListAdicionals>
+                    </div>
+                  </Col>
+                </Row>
+                <Hr />
+              </div>
+            ))}
           </ul>
         </Adicionals>
       </Container>
@@ -214,9 +183,7 @@ function Add() {
       <Container>
         <Adicionals>
           <div className="adicionals list-food">
-            <h4 className="text-uppercase mt-2 mb-4">
-              Observações
-              </h4>
+            <h4 className="text-uppercase mt-2 mb-4">Observações</h4>
           </div>
           <Form>
             <Form.Group controlId="exampleForm.ControlTextarea1">
@@ -234,7 +201,9 @@ function Add() {
               <h4 className="text-uppercase font-weight-bold">Total</h4>
             </ListFood>
             <ListFood>
-              <h4 className="font-weight-bold">R$ 98,00</h4>
+              <h4 className="font-weight-bold">
+                {totalPrice.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' })}
+              </h4>
             </ListFood>
           </ul>
         </ListTotalAdicionals>
@@ -243,8 +212,12 @@ function Add() {
       <Row>
         <Col>
           <div className="div-btn">
-            <Link to="/" class="btn btn-primary btn-lg btn-block btn-add-cart">Adicionar e continuar comprando</Link>
-            <Link to="/finalizar" class="btn btn-success btn-lg btn-block btn-cart">Finalizar compra</Link>
+            <Link to="/" className="btn btn-primary btn-lg btn-block btn-add-cart">
+              Adicionar e continuar comprando
+            </Link>
+            <Link to="/finalizar" className="btn btn-success btn-lg btn-block btn-cart">
+              Finalizar compra
+            </Link>
           </div>
         </Col>
       </Row>

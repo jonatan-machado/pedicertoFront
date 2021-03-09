@@ -1,75 +1,51 @@
-import React from 'react';
-
-import {
-  Accordion,
-  Card, 
-  Row,
-  Col,
-  Form,
-  Button,
-} from 'react-bootstrap';
-
+import React, { useState, useEffect } from 'react';
+import { Accordion, Card, Row, Col, Form, Button } from 'react-bootstrap';
 import { Container } from './styles';
-
 import HeaderTop from '../../components/HeaderTop';
 import HeaderVertical from '../../components/HeaderVertical';
 import MainAdmin from '../../components/MainAdmin';
+import Api from '../../../services/api';
 
 function Categorias() {
-  return(
+  const [categoriesList, setCategoriesList] = useState([]);
+
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  const userId = userData.id;
+
+  useEffect(() => {
+    getCategoriesList();
+  }, []);
+
+  const getCategoriesList = async () => {
+    try {
+      const request = await Api.get(`/category/${userId}`);
+      setCategoriesList(request.data);
+      console.log(request.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  return (
     <>
       <HeaderTop />
       <HeaderVertical />
 
-      <MainAdmin> 
-          <Accordion>
+      <MainAdmin>
+        {categoriesList.map((category) => (
+          <Accordion key={category.id}>
             <Card>
               <Card.Header>
                 <Accordion.Toggle as={Card.Header} eventKey="0">
-                    Pão
+                  {category.name}
                 </Accordion.Toggle>
               </Card.Header>
               <Accordion.Collapse eventKey="0">
                 <Card.Body>Hello! I'm the body</Card.Body>
               </Accordion.Collapse>
             </Card>
-            <Card>
-              <Card.Header>
-                <Accordion.Toggle as={Card.Header} eventKey="1">
-                  Click me!
-                </Accordion.Toggle>
-              </Card.Header>
-              <Accordion.Collapse eventKey="1">
-                <Card.Body>Hello! I'm another body</Card.Body>
-              </Accordion.Collapse>
-            </Card>
           </Accordion>
-
-
-          <Accordion>
-            <Card>
-              <Card.Header>
-                <Accordion.Toggle as={Card.Header} eventKey="0">
-                  Click me!
-                </Accordion.Toggle>
-              </Card.Header>
-              <Accordion.Collapse eventKey="0">
-                <Card.Body>Hello! I'm the body</Card.Body>
-              </Accordion.Collapse>
-            </Card>
-            <Card>
-              <Card.Header>
-                <Accordion.Toggle as={Card.Header} eventKey="1">
-                  Click me!
-                </Accordion.Toggle>
-              </Card.Header>
-              <Accordion.Collapse eventKey="1">
-                <Card.Body>Hello! I'm another body</Card.Body>
-              </Accordion.Collapse>
-            </Card>
-          </Accordion>
-
-        
+        ))}
       </MainAdmin>
     </>
   );
