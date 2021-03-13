@@ -16,18 +16,22 @@ import {
 
 import Header from '../../../components/Header';
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import Api from '../../../services/api';
 import { currentUserId } from '../../../utils/User';
+import { useCart } from '../../../contexts/CartContext';
 
 function Add() {
+  const history = useHistory();
   const location = useLocation();
   const product = location?.state?.product;
   const userId = currentUserId();
+  const { addOrderToCart } = useCart();
 
   const [quantity, setQuantity] = useState(1);
   const [totalPrice, setTotalPrice] = useState(Number(product.price));
   const [requestedAdditional, setRequestedAdditional] = useState([]);
+  const [observations, setObservations] = useState('');
 
   useEffect(() => {
     getAdditionalsData();
@@ -39,7 +43,6 @@ function Add() {
 
       setRequestedAdditional(() =>
         request.data.map((item) => {
-          //return { id: item.id, name: item.name, qtd: 0, price: item.price };
           return { ...item, qtd: 0 };
         })
       );
@@ -65,7 +68,6 @@ function Add() {
     requestedAdditional[index].qtd += 1;
 
     setTotalPrice(totalPrice + Number(additional.price));
-    //console.log(requestedAdditional);
   };
 
   const removeAdditonal = (additional) => {
@@ -78,15 +80,30 @@ function Add() {
     }
 
     setTotalPrice(totalPrice - Number(additional.price));
-    //console.log(requestedAdditional);
   };
 
-  const finalizeOrder = () => {
+  const addItemToCart = () => {
+    const filteredAdditionals = requestedAdditional.filter(function (obj) {
+      return obj.qtd >= 1;
+    });
+
     try {
       const formatedOrder = {
-        product: ''
+        product: {
+          name: product.name,
+          qtd: quantity,
+          unitaryPrice: Number(product.price),
+          additionals: filteredAdditionals
+        },
+
+        obs: observations,
+        totalPrice: totalPrice
       };
-    } catch (error) {}
+
+      addOrderToCart(formatedOrder);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -168,7 +185,7 @@ function Add() {
                           +
                         </Button>
                       </ListAdicionals>
-                      {/* {additional.qtd} */}
+                      {additional.qtd}
                       <ListAdicionals>
                         <Button
                           onClick={() => removeAdditonal(additional)}
@@ -196,7 +213,13 @@ function Add() {
           <Form>
             <Form.Group controlId="exampleForm.ControlTextarea1">
               {/* <Form.Label>Observações</Form.Label> */}
-              <Form.Control as="textarea" rows={5} placeholder="Informe aqui informações adicionais ao seu pedido." />
+              <Form.Control
+                value={observations}
+                onChange={(e) => setObservations(e.target.value)}
+                as="textarea"
+                rows={5}
+                placeholder="Informe aqui informações adicionais ao seu pedido."
+              />
             </Form.Group>
           </Form>
         </Adicionals>
@@ -220,10 +243,10 @@ function Add() {
       <Row>
         <Col>
           <div className="div-btn">
-            <Link to="/" className="btn btn-primary btn-lg btn-block btn-add-cart">
+            <Link to="/" onClick={() => addItemToCart()} className="btn btn-primary btn-lg btn-block btn-add-cart">
               Adicionar e continuar comprando
             </Link>
-            <Link to="/finalizar" className="btn btn-success btn-lg btn-block btn-cart">
+            <Link to="/finalizar" onClick={() => addItemToCart()} className="btn btn-success btn-lg btn-block btn-cart">
               Finalizar compra
             </Link>
           </div>

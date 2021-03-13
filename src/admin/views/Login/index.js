@@ -18,6 +18,8 @@ function Login() {
 
       const request = await Api.post('/sessions', { email, password });
 
+      console.log(request);
+
       const userData = JSON.stringify(request?.data.user);
       const userToken = JSON.stringify(request?.data.token);
 

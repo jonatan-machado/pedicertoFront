@@ -7,7 +7,7 @@ import { Container, Logo } from './styles';
 
 function Header() {
   return (
-    <Container className="">
+    <Container>
       <Row className="mx-0 align-items-center">
         <Col xs={3} className="pl-md-4">
           <ChevronLeft cursor="pointer" size={32} onClick={() => history.goBack()} />

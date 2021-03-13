@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 
 export default function RouteWrapper({ component: Component, isPrivate, ...rest }) {
-  // if(!signed && isPrivate){
-  //     return <Redirect to="/" />;
+  // const token = JSON.parse(localStorage.getItem('userToken'));
+
+  // if (!token && isPrivate) {
+  //   return <Redirect to="/login" />;
   // }
 
-  // if(signed && !isPrivate){
-  //     return <Redirect to="/categories" />
+  // if (token && !isPrivate) {
+  //   return <Redirect to="/pedidos" />;
   // }
 
   return <Route {...rest} render={(props) => <Component {...props} />} />;

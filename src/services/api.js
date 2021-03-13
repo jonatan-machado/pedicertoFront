@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const Api = axios.create({
-  // baseURL: 'https://api.multiimob.com.br',
-  baseURL: 'http://localhost:3333'
+  //baseURL: 'http://localhost:3333'
+  baseURL: 'http://18.230.118.216'
 });
 
 export default Api;

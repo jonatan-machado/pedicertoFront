@@ -10,7 +10,6 @@ import Pedidos from '../admin/views/Pedidos';
 import Usuarios from '../admin/views/Usuarios';
 import NovoUsuario from '../admin/views/Usuarios/Novo';
 import Categorias from '../admin/views/Categorias';
-import NovaCategoria from '../admin/views/Categorias/Nova';
 
 import Categories from '../views/Products/Categories';
 import Add from '../views/Requests/Add';
@@ -29,14 +28,13 @@ export default function Routes() {
       <Route path="/fim" exact component={Finish} />
 
       <Route path="/login" exact component={Login} />
-      <Route path="/pedidos" exact component={Pedidos} />
-      <Route path="/clientes" exact component={Clientes} />
-      <Route path="/produtos" exact component={Produtos} />
-      <Route path="/produtos/novo" exact component={NovoProduto} />
-      <Route path="/usuarios" exact component={Usuarios} />
-      <Route path="/usuarios/novo" exact component={NovoUsuario} />
-      <Route path="/categorias" exact component={Categorias} />
-      <Route path="/categorias/nova" exact component={NovaCategoria} />
+      <Route isPrivate path="/pedidos" exact component={Pedidos} />
+      <Route isPrivate path="/clientes" exact component={Clientes} />
+      <Route isPrivate path="/produtos" exact component={Produtos} />
+      <Route isPrivate path="/produtos/novo" exact component={NovoProduto} />
+      <Route isPrivate path="/usuarios" exact component={Usuarios} />
+      <Route isPrivate path="/usuarios/novo" exact component={NovoUsuario} />
+      <Route isPrivate path="/categorias" exact component={Categorias} />
     </Switch>
   );
 }
