@@ -2,42 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 
-// import AuthLayout from '../pages/_layouts/auth';
-// import DefaultLayout from '../pages/_layouts/default';
+export default function RouteWrapper({ component: Component, isPrivate, ...rest }) {
+  // const token = JSON.parse(localStorage.getItem('userToken'));
 
-// import { store } from '../store';
+  // if (!token && isPrivate) {
+  //   return <Redirect to="/login" />;
+  // }
 
-export default function RouteWrapper({
-    component: Component,
-    isPrivate,
-    ...rest
-}) {
-    // const { signed } = store.getState().auth;
+  // if (token && !isPrivate) {
+  //   return <Redirect to="/pedidos" />;
+  // }
 
-    // if(!signed && isPrivate){
-    //     return <Redirect to="/" />;
-    // }
+  return <Route {...rest} render={(props) => <Component {...props} />} />;
 
-    // if(signed && !isPrivate){
-    //     return <Redirect to="/categories" />
-    // }
+  RouteWrapper.propTypes = {
+    isPrivate: PropTypes.bool,
+    component: PropTypes.oneOfType([PropTypes.element, PropTypes.func]).isRequired
+  };
 
-    // const Layout = signed ? DefaultLayout : AuthLayout;
-
-    return(
-        <Route { ...rest} render={props => (
-            // <Layout>
-                <Component {...props} />
-            // </Layout>
-        )} />
-    );
-
-    RouteWrapper.propTypes = {
-        isPrivate: PropTypes.bool,
-        component: PropTypes.oneOfType([PropTypes.element, PropTypes.func]).isRequired,
-    }
-
-    RouteWrapper.defaultProps = {
-        isPrivate: false,
-    }
+  RouteWrapper.defaultProps = {
+    isPrivate: false
+  };
 }
