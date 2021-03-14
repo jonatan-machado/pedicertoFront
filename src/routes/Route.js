@@ -9,10 +9,6 @@ export default function RouteWrapper({ component: Component, isPrivate, ...rest 
     return <Redirect to="/" />;
   }
 
-  if (token && !isPrivate) {
-    return <Redirect to="/pedidos" />;
-  }
-
   return <Route {...rest} render={(props) => <Component {...props} />} />;
 
   RouteWrapper.propTypes = {
