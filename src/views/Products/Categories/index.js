@@ -17,7 +17,7 @@ function Categories() {
   const [categoriesList, setCategoriesList] = useState([]);
 
   const userData = JSON.parse(localStorage.getItem('userData'));
-  const userId = userData.id;
+  const userId = userData?.id;
   const token = localStorage.getItem('userToken');
 
   useEffect(() => {
