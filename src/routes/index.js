@@ -20,14 +20,14 @@ import Finish from '../views/Requests/Finish';
 export default function Routes() {
   return (
     <Switch>
-      <Route path="/inicio" exact component={Categories} />
+      <Route path="/" exact component={Categories} />
 
       <Route path="/add" exact component={Add} />
       <Route path="/finalizar" exact component={Checkout} />
       <Route path="/detail" exact component={Detail} />
       <Route path="/fim" exact component={Finish} />
 
-      <Route path="/" exact component={Login} />
+      <Route path="/login" exact component={Login} />
       <Route isPrivate path="/pedidos" exact component={Pedidos} />
       <Route isPrivate path="/clientes" exact component={Clientes} />
       <Route isPrivate path="/produtos" exact component={Produtos} />

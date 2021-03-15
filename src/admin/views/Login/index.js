@@ -26,7 +26,7 @@ function Login() {
       localStorage.setItem('userData', userData);
       localStorage.setItem('userToken', userToken);
 
-      history.push('/inicio');
+      history.push('/pedidos');
     } catch (error) {
       alert('Credenciais Incorretas!');
     }

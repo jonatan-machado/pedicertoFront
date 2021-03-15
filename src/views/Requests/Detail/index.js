@@ -50,7 +50,7 @@ function Detail() {
               >
                 <Row className="">
                   <Col xs={5} md={3} className="img-food">
-                    <ImgProducts src={`http://18.230.118.216/${product.img_product}`} />
+                    <ImgProducts src={product.img_product} />
                   </Col>
                   <Col xs={7} md={8} className="desc-food">
                     <Food>

@@ -17,8 +17,8 @@ function Categories() {
   const [categoriesList, setCategoriesList] = useState([]);
 
   const userData = JSON.parse(localStorage.getItem('userData'));
+  //const userId = userData?.id;
   const userId = userData?.id;
-  const token = localStorage.getItem('userToken');
 
   useEffect(() => {
     getCategoriesList();
@@ -26,7 +26,7 @@ function Categories() {
 
   const getCategoriesList = async () => {
     try {
-      const request = await Api.get(`/category/${userId}`, { headers: { Authorization: `Bearer ${token}` } });
+      const request = await Api.get(`/category/${userId}`);
       setCategoriesList(request.data);
     } catch (error) {
       console.log(error.message);

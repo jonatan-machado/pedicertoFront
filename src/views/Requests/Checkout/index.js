@@ -31,6 +31,7 @@ function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [cpfOrCnpj, setCpfOrCnpj] = useState('');
   const [paymentMethodsList, setPaymentMethodsList] = useState([]);
+  const [changeVal, setChangeVal] = useState('');
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -66,6 +67,7 @@ function Checkout() {
   const onChangeCity = (e) => setCity(e.target.value);
   const onChangeState = (e) => setState(e.target.value);
   const onChangeCpfCnpj = (e) => setCpfOrCnpj(e.target.value);
+  const onChangeChangeVal = (e) => setChangeVal(e.target.value);
 
   const submitOrder = async () => {
     const finalOrder = {
@@ -86,7 +88,7 @@ function Checkout() {
       complemention: 'beco 0 apto 01',
       code_order: '0123456',
       city: city,
-      change_value: null,
+      change_value: changeVal,
       phone: mockClient.phone,
       address: streetName,
       name: mockClient.name,
@@ -272,7 +274,12 @@ function Checkout() {
                                 <Form.Row>
                                   <Form.Group as={Col} md="9">
                                     <Form.Label>Precisa de Troco?</Form.Label>
-                                    <Form.Control type="text" placeholder="Para quanto?" />
+                                    <Form.Control
+                                      onChange={onChangeChangeVal}
+                                      value={changeVal}
+                                      type="text"
+                                      placeholder="Para quanto?"
+                                    />
                                   </Form.Group>
                                 </Form.Row>
                               </Form>
