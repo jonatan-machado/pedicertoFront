@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import Api from '../../../services/api';
 import { Container, Content } from './styles';
-import history from '../../../services/history';
+import { useHistory } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
 
   const onChangeEmail = (event) => setEmail(event.target.value);
 

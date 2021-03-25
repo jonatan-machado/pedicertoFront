@@ -4,12 +4,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 // import { Button } from 'react-bootstrap';
 import { Main, MenuInicial, Card, ImgProducts, Logo, Menu, TitleCard } from './styles';
 import Burguer from '../../../assets/images/hamburger.jpg';
-import Pizza from '../../../assets/images/pizza.jpg';
-import Sushi from '../../../assets/images/sushi.jpg';
-import Massas from '../../../assets/images/massas.jpg';
-import FrutosdoMar from '../../../assets/images/frutos-mar.jpg';
-import Bebidas from '../../../assets/images/bebidas.jpg';
-import HeaderFim from '../../../components/HeaderFim';
+import Header from '../../../components/Header';
 import { Link } from 'react-router-dom';
 import Api from '../../../services/api';
 
@@ -17,7 +12,6 @@ function Categories() {
   const [categoriesList, setCategoriesList] = useState([]);
 
   const userData = JSON.parse(localStorage.getItem('userData'));
-  //const userId = userData?.id;
   const userId = userData?.id;
 
   useEffect(() => {
@@ -34,7 +28,7 @@ function Categories() {
   };
   return (
     <Main>
-      <HeaderFim />
+      <Header hideGoBack={true} />
 
       <MenuInicial>
         <Row>

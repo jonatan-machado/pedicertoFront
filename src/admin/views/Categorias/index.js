@@ -1,29 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Accordion, Card, Row, Col, Form, Button, Modal } from 'react-bootstrap';
-import { Container } from './styles';
+import { Card, Row, Col, Form, Button, Modal } from 'react-bootstrap';
+import { CategoriesWrapper, PreviewProductAvatar, InputWrapper } from './styles';
 import HeaderTop from '../../components/HeaderTop';
 import HeaderVertical from '../../components/HeaderVertical';
 import MainAdmin from '../../components/MainAdmin';
 import Api from '../../../services/api';
 
 function Categorias() {
-  const [categoriesList, setCategoriesList] = useState([]);
-  const [show, setShow] = useState(false);
-  const [categoryName, setCategoryName] = useState('');
-
   const userData = JSON.parse(localStorage.getItem('userData'));
   const userId = userData.id;
   const token = JSON.parse(localStorage.getItem('userToken'));
 
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [productsList, setProductsList] = useState([]);
+  const [show, setShow] = useState(false);
+  const [categoryName, setCategoryName] = useState('');
+  const [productName, setProductName] = useState('');
+  const [productPrice, setProductPrice] = useState('');
+  const [productDescription, setProductDescription] = useState('');
+  const [productRegisterModal, setProductRegisterModal] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState(null);
+
   useEffect(() => {
-    getCategoriesList();
+    getCategoriesData();
   }, []);
 
-  const getCategoriesList = async () => {
+  const getCategoriesData = async () => {
     try {
-      const request = await Api.get(`/category/${userId}`);
-      setCategoriesList(request.data);
-      console.log(request.data);
+      const categories = await Api.get(`/category/${userId}`);
+      setCategoriesList(categories.data);
+      console.log(categories.data, 'categories');
     } catch (error) {
       console.log(error.message);
     }
@@ -43,7 +49,10 @@ function Categorias() {
         { name: categoryName },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log(request);
+
+      categoriesList.push(request.data);
+
+      setShow(false);
     } catch (error) {
       alert(error.message);
     }
@@ -58,20 +67,22 @@ function Categorias() {
         <Button onClick={() => setShow(true)} style={{ marginBottom: 20 }}>
           Nova Categoria
         </Button>
-        {categoriesList.map((category) => (
-          <Accordion key={category.id}>
-            <Card>
-              <Card.Header>
-                <Accordion.Toggle as={Card.Header} eventKey="0">
-                  {category.name}
-                </Accordion.Toggle>
-              </Card.Header>
-              <Accordion.Collapse eventKey="0">
-                <Card.Body>Hello! I'm the body</Card.Body>
-              </Accordion.Collapse>
-            </Card>
-          </Accordion>
-        ))}
+
+        <CategoriesWrapper>
+          <Row style={{ width: '100%' }}>
+            {categoriesList.map((category) => (
+              <Col key={category.id} lg="4">
+                <Card style={{ width: '100%' }}>
+                  <Card.Body>
+                    <Card.Title>{category.name}</Card.Title>
+
+                    <Button variant="primary">Sub-categorias</Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </CategoriesWrapper>
       </MainAdmin>
 
       <Modal centered show={show} onHide={() => setShow(false)}>
@@ -80,15 +91,13 @@ function Categorias() {
         </Modal.Header>
         <Modal.Body>
           <Form.Group>
-            <Form.Group>
-              <Form.Label>Nome da Categoria</Form.Label>
-              <Form.Control
-                onChange={onChangeCategoryName}
-                value={categoryName}
-                type="text"
-                placeholder="Digite o nome da categoria aqui"
-              />
-            </Form.Group>
+            <Form.Label>Nome da Categoria</Form.Label>
+            <Form.Control
+              onChange={onChangeCategoryName}
+              value={categoryName}
+              type="text"
+              placeholder="Digite o nome da categoria aqui"
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

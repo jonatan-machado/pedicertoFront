@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Api from '../../../services/api';
 import { Accordion, Card, Row, Col, Modal, Form, Button } from 'react-bootstrap';
 import { ChevronDown } from 'react-bootstrap-icons';
@@ -8,17 +8,24 @@ import HeaderVertical from '../../components/HeaderVertical';
 import MainAdmin from '../../components/MainAdmin';
 import { Content } from './styles';
 
-function Usuario() {
+function Usuarios() {
+  const token = JSON.parse(localStorage.getItem('userToken'));
+
   const [show, setShow] = useState(false);
+  const [employees, setEmployees] = useState([]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
 
+  useEffect(() => {
+    listEmployees();
+  }, []);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleCreateUser = async () => {
+  const handleCreateEmployee = async () => {
     try {
       if (name === '' || password === '' || email === '' || passwordConfirmation === '') {
         alert('Por favor preencha todos os campos!');
@@ -28,10 +35,27 @@ function Usuario() {
         alert('A senha e a confirmação de senha não conferem.');
       }
 
-      const request = await Api.post('/users', { name, email, password });
+      const request = await Api.post(
+        '/employee',
+        { name, password, email },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
+      console.log(request);
+
+      employees.push(request?.data);
       handleClose();
       alert('Usuário criado com sucesso');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const listEmployees = async () => {
+    try {
+      const request = await Api.get('/employee', { headers: { Authorization: `Bearer ${token}` } });
+
+      setEmployees(request.data);
     } catch (error) {
       console.log(error);
     }
@@ -45,12 +69,12 @@ function Usuario() {
       <MainAdmin>
         <div className="text-right mt-3 mb-5">
           <Button variant="primary" onClick={handleShow}>
-            Novo Usuário
+            Novo Funcionário
           </Button>
 
           <Modal centered show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>Incluir novo usuário</Modal.Title>
+              <Modal.Title>Incluir novo Funcionário</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <Form>
@@ -85,7 +109,7 @@ function Usuario() {
                 </Form.Group>
 
                 <div className="text-right">
-                  <Button variant="primary" onClick={handleCreateUser}>
+                  <Button variant="primary" onClick={handleCreateEmployee}>
                     Cadastrar
                   </Button>
                 </div>
@@ -100,70 +124,57 @@ function Usuario() {
         </div>
 
         <Content>
-          <div className="breadcrumb">
-            {/* <Row>
-                    <Col xs={3}></Col>
-                    <Col xs={4}>
-                        <h4>
-                            Nome
-                        </h4>    
-                    </Col>
-                    <Col xs={5}>
-                        <h4>
-                            E-mail
-                        </h4>
-                    </Col>
-                </Row> */}
-          </div>
           <Accordion>
-            <Card>
-              <Card.Header>
-                <Accordion.Toggle as={Card.Header} eventKey="1">
-                  <ul>
-                    <li>
-                      <ChevronDown size={30} />
-                    </li>
-                    <li>Mônica Duarte</li>
-                    <li>monica@gmail.com</li>
-                  </ul>
-                </Accordion.Toggle>
-              </Card.Header>
-              <Accordion.Collapse eventKey="1">
-                <Card.Body>
-                  <Row>
-                    <Col>
-                      <Form>
-                        <Form.Group controlId="formBasicEmail">
-                          <Form.Label>Nome</Form.Label>
-                          <Form.Control type="text" placeholder="Mônica" />
-                        </Form.Group>
+            {employees.map((employee) => (
+              <Card>
+                <Card.Header>
+                  <Accordion.Toggle as={Card.Header} eventKey="1">
+                    <ul>
+                      <li>
+                        <ChevronDown size={30} />
+                      </li>
+                      <li>{employee.name}</li>
+                      <li>{employee.email}</li>
+                    </ul>
+                  </Accordion.Toggle>
+                </Card.Header>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body>
+                    <Row>
+                      <Col>
+                        <Form>
+                          <Form.Group controlId="formBasicEmail">
+                            <Form.Label>Nome</Form.Label>
+                            <Form.Control type="text" placeholder={employee.name} />
+                          </Form.Group>
 
-                        <Form.Group controlId="formBasicEmail">
-                          <Form.Label>E-mail</Form.Label>
-                          <Form.Control type="email" placeholder="monica@gmail.com" />
-                        </Form.Group>
+                          <Form.Group controlId="formBasicEmail">
+                            <Form.Label>E-mail</Form.Label>
+                            <Form.Control type="email" placeholder={employee.email} />
+                          </Form.Group>
 
-                        <Form.Group controlId="formBasicPassword">
-                          <Form.Label>Senha</Form.Label>
-                          <Form.Control type="password" placeholder="**********" />
-                        </Form.Group>
+                          <Form.Group controlId="formBasicPassword">
+                            <Form.Label>Senha</Form.Label>
+                            <Form.Control type="password" placeholder="**********" />
+                          </Form.Group>
 
-                        <Form.Group controlId="formBasicPassword">
-                          <Form.Label>Confirmar senha</Form.Label>
-                          <Form.Control type="password" placeholder="**********" />
-                        </Form.Group>
+                          <Form.Group controlId="formBasicPassword">
+                            <Form.Label>Confirmar senha</Form.Label>
+                            <Form.Control type="password" placeholder="**********" />
+                          </Form.Group>
 
-                        <div className="">
-                          <Button variant="primary" type="submit">
-                            Alterar
-                          </Button>
-                        </div>
-                      </Form>
-                    </Col>
-                  </Row>
-                </Card.Body>
-              </Accordion.Collapse>
-            </Card>
+                          <div className="">
+                            <Button variant="primary" type="submit">
+                              Alterar
+                            </Button>
+                          </div>
+                        </Form>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            ))}
           </Accordion>
         </Content>
       </MainAdmin>
@@ -171,4 +182,4 @@ function Usuario() {
   );
 }
 
-export default Usuario;
+export default Usuarios;

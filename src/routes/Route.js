@@ -6,7 +6,7 @@ export default function RouteWrapper({ component: Component, isPrivate, ...rest 
   const token = JSON.parse(localStorage.getItem('userToken'));
 
   if (!token && isPrivate) {
-    return <Redirect to="/" />;
+    return <Redirect to="/login" />;
   }
 
   return <Route {...rest} render={(props) => <Component {...props} />} />;

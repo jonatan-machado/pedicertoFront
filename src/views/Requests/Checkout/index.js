@@ -37,6 +37,7 @@ function Checkout() {
   const handleShow = () => setShow(true);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     getTotalPrice();
     getPaymentMethods();
   }, []);
@@ -95,15 +96,12 @@ function Checkout() {
       products: cartItems
     };
 
-    console.log(finalOrder);
     const config = {
       headers: { Authorization: `Bearer ${token}` }
     };
 
     try {
       const request = await Api.post('/order', finalOrder, config);
-
-      console.log(request);
     } catch (error) {}
   };
 
@@ -303,16 +301,18 @@ function Checkout() {
                             <Form.Group>
                               {paymentMethodsList.map((item) => {
                                 const parsedItem = JSON.parse(item.name);
-                                return (
-                                  <Form.Check
-                                    key={item.id}
-                                    onClick={() => setPaymentMethod(item.id)}
-                                    type="radio"
-                                    label={parsedItem.name}
-                                    name="creditCardFlag"
-                                    value={parsedItem.name}
-                                  />
-                                );
+                                if (parsedItem.type !== 'dinheiro') {
+                                  return (
+                                    <Form.Check
+                                      key={item.id}
+                                      onClick={() => setPaymentMethod(item.id)}
+                                      type="radio"
+                                      label={parsedItem.name}
+                                      name="creditCardFlag"
+                                      value={parsedItem.name}
+                                    />
+                                  );
+                                }
                               })}
                             </Form.Group>
                           </fieldset>

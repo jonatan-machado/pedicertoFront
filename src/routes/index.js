@@ -16,6 +16,8 @@ import Add from '../views/Requests/Add';
 import Checkout from '../views/Requests/Checkout';
 import Detail from '../views/Requests/Detail';
 import Finish from '../views/Requests/Finish';
+import MetodosPagamento from '../admin/views/MetodosPagamento';
+import Additionals from '../admin/views/Additionals';
 
 export default function Routes() {
   return (
@@ -31,10 +33,12 @@ export default function Routes() {
       <Route isPrivate path="/pedidos" exact component={Pedidos} />
       <Route isPrivate path="/clientes" exact component={Clientes} />
       <Route isPrivate path="/produtos" exact component={Produtos} />
-      <Route isPrivate path="/produtos/novo" exact component={NovoProduto} />
+      <Route isPrivate path="/novo-produto/:id_category" exact component={NovoProduto} />
       <Route isPrivate path="/usuarios" exact component={Usuarios} />
       <Route isPrivate path="/usuarios/novo" exact component={NovoUsuario} />
+      <Route isPrivate path="/metodos-de-pagamento" exact component={MetodosPagamento} />
       <Route isPrivate path="/categorias" exact component={Categorias} />
+      <Route isPrivate path="/additionals/:id_user/:id_category/:id_product" exact component={Additionals} />
     </Switch>
   );
 }

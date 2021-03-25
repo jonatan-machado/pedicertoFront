@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Accordion, Card, Row, Col, Form, Button } from 'react-bootstrap';
+import { Accordion, Card, Row, Col, Form, Button, Table } from 'react-bootstrap';
 import Api from '../../../services/api';
 import { Container, Column } from './styles';
 
@@ -10,6 +10,8 @@ import MainAdmin from '../../components/MainAdmin';
 
 function Pedidos() {
   const token = JSON.parse(localStorage.getItem('userToken'));
+
+  const [orders, setOrders] = useState([]);
   const [waitingConfirmation, setWaitingConfirmation] = useState([]);
   const [confirmed, setconfirmed] = useState([]);
   const [inProgress, setInProgress] = useState([]);
@@ -22,10 +24,8 @@ function Pedidos() {
   const getOrdersData = async () => {
     try {
       const request = await Api.get('/order', { headers: { Authorization: `Bearer ${token}` } });
-      // request.data?.map((order) => {
 
-      // })
-      console.log(request.data);
+      setOrders(request.data);
     } catch (error) {
       console.log(error.message);
     }
@@ -37,28 +37,26 @@ function Pedidos() {
       <HeaderVertical />
 
       <MainAdmin>
-        <Container>
-          <Column>
-            <header>
-              <h6 style={{ color: 'red' }}>Aguardando Confirmação</h6>
-            </header>
-          </Column>
-          <Column>
-            <header>
-              <h6 style={{ color: 'blue' }}>Pedidos Confirmados</h6>
-            </header>
-          </Column>
-          <Column>
-            <header>
-              <h6 style={{ color: 'yellow' }}>Pedidos em andamento</h6>
-            </header>
-          </Column>
-          <Column>
-            <header>
-              <h6 style={{ color: 'green' }}>Saiu para entrega</h6>
-            </header>
-          </Column>
-        </Container>
+        <Table>
+          <thead>
+            <tr>
+              <th>STATUS</th>
+              <th>CLIENTE</th>
+              <th>PEDIDO</th>
+              <th>TOTAL</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <tr>
+                <td>status</td>
+                <td>cliente</td>
+                <td>pedido</td>
+                <td>total</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </MainAdmin>
     </>
   );

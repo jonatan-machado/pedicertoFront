@@ -25,9 +25,7 @@ function Detail() {
 
   const getProductsData = async () => {
     try {
-      const request = await Api.get(`/category/products/${userId}/${categoryId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const request = await Api.get(`/category/products/${userId}/${categoryId}`);
 
       setProducts(request.data);
     } catch (error) {

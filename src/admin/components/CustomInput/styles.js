@@ -1,23 +1,4 @@
 import styled from 'styled-components';
-import CameraIcon from '../../assets/camera-icon.svg';
-
-export const Container = styled.div``;
-
-export const CategoriesWrapper = styled.div`
-  display: flex;
-`;
-
-export const PreviewProductAvatar = styled.img`
-  width: 250px;
-  height: 180px;
-  border-radius: 10px;
-  display: block;
-
-  background-color: #417bd9;
-  background-image: url(${CameraIcon});
-  background-repeat: no-repeat;
-  background-position: center;
-`;
 
 export const InputWrapper = styled.div`
   position: relative;
